@@ -60,6 +60,7 @@ unary_arithmetic_operators = {
     '$log10',
     '$sqrt',
     '$trunc',
+    '$round',
 }
 binary_arithmetic_operators = {
     '$divide',
@@ -361,6 +362,8 @@ class _Parser(object):
                 return math.sqrt(number)
             if operator == '$trunc':
                 return math.trunc(number)
+            if operator == '$round':
+                return round(number)
 
         if operator in binary_arithmetic_operators:
             if not isinstance(values, (tuple, list)):
