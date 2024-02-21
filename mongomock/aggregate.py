@@ -235,9 +235,19 @@ def _merge_objects_operation(values):
     return merged_doc
 
 
+def _std_dev_pop_operation(values):
+    values_list = list(v for v in values if isinstance(v, numbers.Number))
+    if not values_list:
+        return None
+    mean = sum(values_list) / float(len(values_list))
+    variance = sum((x - mean) ** 2 for x in values_list) / float(len(values_list))
+    return math.sqrt(variance)
+
+
 _GROUPING_OPERATOR_MAP = {
     '$sum': _sum_operation,
     '$avg': _avg_operation,
+    "$stdDevPop": _std_dev_pop_operation,
     '$mergeObjects': _merge_objects_operation,
     '$min': lambda values: _group_operation(values, min),
     '$max': lambda values: _group_operation(values, max),
