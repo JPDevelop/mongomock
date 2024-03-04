@@ -4588,11 +4588,6 @@ class CollectionAPITest(TestCase):
 
         with self.assertRaises(NotImplementedError):
             self.db.collection.aggregate([
-                {'$project': {'a': {'$stdDevPop': 'scores'}}},
-            ])
-
-        with self.assertRaises(NotImplementedError):
-            self.db.collection.aggregate([
                 {'$project': {'a': {'$cmp': [1, 2]}}},
             ])
 
@@ -7350,6 +7345,31 @@ class CollectionAPITest(TestCase):
         }])
 
         self.assertListEqual(expected, list(actual))
+    def test_std_dev_pop(self):
+        collection = self.db.collection
+        collection.insert_many([
+            {'_id': 1, 'grades': [80, 85, 90, 90, 90]},
+            {'_id': 2, 'grades': [96, 100, 100, 100, 100]},
+            {'_id': 3, 'grades': [90, 90, 90, 90, 90]},
+        ])
+
+        actual = collection.aggregate([
+            {
+                '$project': {
+                    'stdDevPop': {'$stdDevPop': '$grades'},
+                    '_id': 0
+                }
+            }
+        ])
+
+        expect = [
+            {'stdDevPop': 4.0},
+            {'stdDevPop': 1.6},
+            {'stdDevPop': 0.0},
+        ]
+
+        for i, item in enumerate(actual):
+            self.assertAlmostEqual(expect[i]['stdDevPop'], item['stdDevPop'], places=5)
 
     def test_aggregate_project_with_boolean(self):
         collection = self.db.collection

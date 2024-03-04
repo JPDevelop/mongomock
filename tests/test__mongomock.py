@@ -2654,7 +2654,8 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
             'pow': {'$pow': [4, 2]},
             'sqrt': {'$sqrt': 100},
             'trunc': {'$trunc': 8.35},
-            'round': {'$round': 9.51}
+            'round': {'$round': 9.51},
+            'stdDevPop': {'$stdDevPop': '$a'},
         }}]
         self.cmp.compare.aggregate(pipeline)
 
@@ -3861,6 +3862,7 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
         self.cmp.compare_exceptions.aggregate([{'$project': {'c': {'$sum': []}}}])
         self.cmp.compare_exceptions.aggregate([{'$project': {'c': {'$multiply': []}}}])
         self.cmp.compare_exceptions.aggregate([{'$project': {'c': {'$round': "12"}}}])
+        self.cmp.compare_exceptions.aggregate([{'$project': {'c': {'$stdDevPop': [12, 2, 3]}}}])
         self.cmp.compare_exceptions.aggregate([{'$project': {'n': {'$add': '$a'}}}])
         self.cmp.compare_exceptions.aggregate(
             [{'$project': {'q': {'$multiply': [1, '$non_existent_key']}}}])
